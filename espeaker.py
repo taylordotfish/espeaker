@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (C) 2015-2016 taylor.fish <contact@taylor.fish>
+# Copyright (C) 2015-2016, 2021 taylor.fish <contact@taylor.fish>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import asyncio
 import conf
 import sys
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 USAGE = """\
 Usage: espeaker <port> <irc-host> <irc-port> [--ssl] <nickname> <channel>\
@@ -83,17 +83,13 @@ class ESpeaker:
         print("SSML data:", ssml_data[1:], end="")
         await self.broadcast(ssml_data)
 
-    async def start_async(self, hostname, port, ssl, nickname, password):
-        await self.bot.connect(hostname, port, ssl=ssl)
-        await self.bot.register(nickname, password=password)
-        await self.bot.join(self.channel)
-        await self.start_server()
-        await self.bot.listen()
-
-    def start(self, hostname, port, ssl, nickname, password):
-        self.bot.call_coroutine(
-            self.start_async(hostname, port, ssl, nickname, password),
-        )
+    async def run(self, hostname, port, ssl, nickname, password):
+        async def init():
+            await self.bot.connect(hostname, port, ssl=ssl)
+            await self.bot.register(nickname, password=password)
+            await self.bot.join(self.channel)
+            await self.start_server()
+        await self.bot.run(init())
 
 
 def get_voice(nickname):
@@ -122,16 +118,17 @@ def main(argv):
 
     print("Password (empty for none): ", end="", file=sys.stderr, flush=True)
     password = getpass("") if sys.stdin.isatty() else input()
-    espeaker = ESpeaker(channel, port, log_communication=True)
+
+    async def run():
+        espeaker = ESpeaker(channel, port, log_communication=True)
+        await espeaker.run(irc_host, irc_port, ssl, nickname, password)
 
     try:
-        espeaker.start(irc_host, irc_port, ssl, nickname, password)
+        asyncio.run(run())
     except KeyboardInterrupt:
         pass
-
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(espeaker.stop_server())
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

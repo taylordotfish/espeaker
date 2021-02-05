@@ -1,7 +1,7 @@
 espeaker
 ========
 
-Version 0.2.1
+Version 0.3.0
 
 **espeaker** is an IRC bot which allows users to listen to IRC with the
 text-to-speech program [espeak]. It converts IRC messages into SSML data that
@@ -33,9 +33,9 @@ password if you don't want to use one.
 What's new
 ----------
 
-Version 0.2.1:
+Version 0.3.0:
 
-* Fixed a minor error in conf.py.
+* espeaker now works with (and requires) [pyrcb2] v0.6.
 
 Version 0.2.0:
 
@@ -44,5 +44,11 @@ Version 0.2.0:
 Dependencies
 ------------
 
-* Python ≥ 3.5
-* [pyrcb2](https://pypi.python.org/pypi/pyrcb2) ≥ 0.1.2
+* Python ≥ 3.7
+* Python package: [pyrcb2]
+
+Run ``pip3 install -r requirements.txt`` to install the Python packages. You
+can also use ``requirements.freeze.txt`` instead to install specific versions
+of the dependencies that have been verified to work.
+
+[pyrcb2]: https://pypi.org/project/pyrcb2
