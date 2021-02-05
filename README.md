@@ -52,3 +52,9 @@ can also use ``requirements.freeze.txt`` instead to install specific versions
 of the dependencies that have been verified to work.
 
 [pyrcb2]: https://pypi.org/project/pyrcb2
+
+License
+-------
+
+espeaker is licensed under version 2 of the Apache License.
+See [LICENSE](LICENSE).
